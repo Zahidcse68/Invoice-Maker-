@@ -1,0 +1,6 @@
+{
+  "name": "InvoiceCraft",
+  "description": "A comprehensive invoice maker app with letterhead upload, PDF export, and client management.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}
