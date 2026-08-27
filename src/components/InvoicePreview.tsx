@@ -11,7 +11,7 @@ interface InvoicePreviewProps {
 export const InvoicePreview: React.FC<InvoicePreviewProps> = ({ invoice }) => {
   const printRef = useRef<HTMLDivElement>(null);
 
-  const calculateSubtotal = () => invoice.items.reduce((sum, item) => sum + (item.quantity * item.rate), 0);
+  const calculateSubtotal = () => (invoice.items || []).reduce((sum, item) => sum + (item.quantity * item.rate), 0);
   const calculateTotal = () => {
     const sub = calculateSubtotal();
     return sub * (1 + invoice.taxRate / 100) - invoice.discount;
@@ -115,7 +115,7 @@ export const InvoicePreview: React.FC<InvoicePreviewProps> = ({ invoice }) => {
                 </tr>
               </thead>
               <tbody className="text-sm">
-                {invoice.items.map((item, index) => (
+                {(invoice.items || []).map((item, index) => (
                   <tr key={item.id}>
                     <td className="border border-black py-3 px-2 text-center text-sm font-semibold">{index + 1}</td>
                     <td className="border border-black py-3 px-4 text-sm text-black">{item.description}</td>

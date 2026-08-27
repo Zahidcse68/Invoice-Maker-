@@ -93,21 +93,21 @@ export const InvoiceEditor: React.FC<InvoiceEditorProps> = ({ invoice, setInvoic
   const addItem = () => {
     setInvoice({
       ...invoice,
-      items: [...invoice.items, { id: uuidv4(), description: '', quantity: 1, rate: 0 }]
+      items: [...(invoice.items || []), { id: uuidv4(), description: '', quantity: 1, rate: 0, unit: '', hsn: '' }]
     });
   };
 
   const updateItem = (id: string, field: keyof InvoiceItem, value: any) => {
     setInvoice({
       ...invoice,
-      items: invoice.items.map(item => item.id === id ? { ...item, [field]: value } : item)
+      items: (invoice.items || []).map(item => item.id === id ? { ...item, [field]: value } : item)
     });
   };
 
   const removeItem = (id: string) => {
     setInvoice({
       ...invoice,
-      items: invoice.items.filter(item => item.id !== id)
+      items: (invoice.items || []).filter(item => item.id !== id)
     });
   };
 
@@ -265,7 +265,7 @@ export const InvoiceEditor: React.FC<InvoiceEditorProps> = ({ invoice, setInvoic
                </tr>
              </thead>
              <tbody className="text-sm">
-                {invoice.items.map((item, index) => (
+                {(invoice.items || []).map((item, index) => (
                    <tr key={item.id} className="border-b border-gray-50 group">
                       <td className="py-3 font-mono text-gray-400 text-xs">{(index + 1).toString().padStart(2, '0')}</td>
                       <td className="py-3 pr-2">
