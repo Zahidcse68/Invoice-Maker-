@@ -37,16 +37,13 @@ This will automatically start the background server and open a dedicated Desktop
 
 ***
 
-### (Optional) Create a Standalone Desktop Executable
-If you want to package this web app into a double-clickable Windows `.exe` or Mac `.app`, the easiest way is using **Nativefier**:
+### 4. Create a Standalone Desktop Executable
+If you want to package this app into a double-clickable Windows `.exe`, Mac `.app`, or Linux `.AppImage`, we have integrated `electron-builder` to handle this automatically:
 
-1. While the app is running (via `npm run dev`), open a new terminal window.
-2. Install Nativefier globally:
+1. Make sure your dependencies are installed (`npm install`).
+2. Run the build command:
    ```bash
-   npm install -g nativefier
+   npm run build:desktop
    ```
-3. Generate the desktop app:
-   ```bash
-   nativefier "http://localhost:3000" --name "MyInvoiceApp"
-   ```
-This will create a dedicated desktop application folder containing your standalone executable!
+3. Once the build finishes, look inside the newly created `release` folder in your project directory. 
+4. You will find your standalone setup executable there! You can share this file or install it on your computer.

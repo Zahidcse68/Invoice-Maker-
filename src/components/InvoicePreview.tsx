@@ -82,7 +82,7 @@ export const InvoicePreview: React.FC<InvoicePreviewProps> = ({ invoice }) => {
           <div className="flex justify-between mb-12">
             <div className="w-1/2">
               <div className="text-xl font-bold text-black mb-2 whitespace-pre-line leading-snug">
-                <span className="text-sm font-bold text-[#0033cc] block mb-2">Bill To :</span>
+                <span className="text-sm font-bold block mb-2" style={{ color: invoice.themeColor }}>Bill To :</span>
                 {invoice.clientName}
                 {invoice.clientAddress && <><br /><span className="text-sm font-normal">{invoice.clientAddress}</span></>}
                 {invoice.clientEmail && <><br /><span className="text-sm font-normal">{invoice.clientEmail}</span></>}
@@ -92,7 +92,7 @@ export const InvoicePreview: React.FC<InvoicePreviewProps> = ({ invoice }) => {
             <div className="text-right w-1/2 flex flex-col items-end">
               <table className="text-sm font-bold text-black">
                 <tbody>
-                  <tr><td className="pr-4 py-1">Invoice No. :</td><td className="text-[#0033cc]">{invoice.invoiceNumber}</td></tr>
+                  <tr><td className="pr-4 py-1">Invoice No. :</td><td style={{ color: invoice.themeColor }}>{invoice.invoiceNumber}</td></tr>
                   <tr><td className="pr-4 py-1">Invoice Date :</td><td className="border-b border-black">{invoice.date}</td></tr>
                   {invoice.dueDate && <tr><td className="pr-4 py-1">Due Date :</td><td className="border-b border-black">{invoice.dueDate}</td></tr>}
                 </tbody>
@@ -104,7 +104,7 @@ export const InvoicePreview: React.FC<InvoicePreviewProps> = ({ invoice }) => {
           <div className="flex-1">
             <table className="w-full border-collapse border border-black">
               <thead>
-                <tr className="bg-[#0033cc] text-white">
+                <tr className="text-white" style={{ backgroundColor: invoice.themeColor }}>
                   <th className="border border-black py-2 px-2 text-xs font-semibold w-12 text-center">S. No.</th>
                   <th className="border border-black py-2 px-4 text-xs font-semibold text-left">Description of Goods / Services</th>
                   <th className="border border-black py-2 px-2 text-xs font-semibold w-24 text-center">HSN / SAC</th>
@@ -127,7 +127,7 @@ export const InvoicePreview: React.FC<InvoicePreviewProps> = ({ invoice }) => {
                   </tr>
                 ))}
                 <tr>
-                   <td colSpan={6} className="border border-black py-2 px-4 text-right font-bold text-white bg-[#0033cc] text-sm tracking-wider uppercase">
+                   <td colSpan={6} className="border border-black py-2 px-4 text-right font-bold text-white text-sm tracking-wider uppercase" style={{ backgroundColor: invoice.themeColor }}>
                      TOTAL ({invoice.currency})
                    </td>
                    <td className="border border-black py-2 px-2 text-center font-bold text-sm bg-gray-50">
@@ -156,7 +156,7 @@ export const InvoicePreview: React.FC<InvoicePreviewProps> = ({ invoice }) => {
                 )}
                 {(invoice.taxRate > 0 || invoice.discount > 0) && (
                   <tr>
-                     <td colSpan={6} className="border border-black py-2 px-4 text-right font-bold text-white bg-[#0033cc] text-sm tracking-wider uppercase">
+                     <td colSpan={6} className="border border-black py-2 px-4 text-right font-bold text-white text-sm tracking-wider uppercase" style={{ backgroundColor: invoice.themeColor }}>
                        GRAND TOTAL ({invoice.currency})
                      </td>
                      <td className="border border-black py-2 px-2 text-center font-bold text-sm bg-gray-50">
@@ -171,27 +171,52 @@ export const InvoicePreview: React.FC<InvoicePreviewProps> = ({ invoice }) => {
           {/* Footer Notes & Signature */}
           <footer className="mt-8 flex flex-col pt-4">
             <div className="mt-auto flex justify-between items-end border-t border-black pt-4">
-               <div className="w-2/3 pr-8 space-y-6">
+               <div className="w-1/2 pr-8 space-y-4">
+                 {(invoice.bankDetails?.bankName || invoice.bankDetails?.accountName || invoice.bankDetails?.accountNumber || invoice.bankDetails?.ifscCode || invoice.bankDetails?.branch) && (
+                   <div className="text-[10px] text-black">
+                     <div className="font-bold mb-1" style={{ color: invoice.themeColor }}>Bank Details :</div>
+                     <table className="text-[10px]">
+                       <tbody>
+                         {invoice.bankDetails.bankName && <tr><td className="pr-4 py-0.5">Bank Name</td><td>: {invoice.bankDetails.bankName}</td></tr>}
+                         {invoice.bankDetails.accountName && <tr><td className="pr-4 py-0.5">A/c Name</td><td>: {invoice.bankDetails.accountName}</td></tr>}
+                         {invoice.bankDetails.accountNumber && <tr><td className="pr-4 py-0.5">A/c No.</td><td>: {invoice.bankDetails.accountNumber}</td></tr>}
+                         {invoice.bankDetails.ifscCode && <tr><td className="pr-4 py-0.5">IFSC Code</td><td>: {invoice.bankDetails.ifscCode}</td></tr>}
+                         {invoice.bankDetails.branch && <tr><td className="pr-4 py-0.5">Branch</td><td>: {invoice.bankDetails.branch}</td></tr>}
+                       </tbody>
+                     </table>
+                   </div>
+                 )}
                  {invoice.notes && (
-                   <div className="text-[9px] uppercase tracking-widest text-gray-500 font-bold whitespace-pre-line leading-relaxed">
-                     <span className="text-black mb-1 block">Notes:</span>
+                   <div className="text-[10px] whitespace-pre-line leading-relaxed">
+                     <span className="font-bold mb-1 block" style={{ color: invoice.themeColor }}>Notes :</span>
                      {invoice.notes}
                    </div>
                  )}
                  {invoice.terms && (
-                   <div className="text-[9px] uppercase tracking-widest text-gray-400 font-bold whitespace-pre-line leading-relaxed">
-                     <span className="text-black mb-1 block">Terms:</span>
+                   <div className="text-[10px] whitespace-pre-line leading-relaxed">
+                     <span className="font-bold mb-1 block" style={{ color: invoice.themeColor }}>Terms :</span>
                      {invoice.terms}
                    </div>
                  )}
                </div>
                
-               <div className="w-1/3 flex flex-col items-center">
-                 {invoice.signatureUrl && (
-                   <img src={invoice.signatureUrl} alt="Authorized Signatory" className="max-h-24 object-contain mb-2" />
+               <div className="w-1/2 flex justify-end gap-8 items-end">
+                 {invoice.qrCodeUrl && (
+                   <div className="flex flex-col items-center">
+                     <div className="text-[10px] font-bold text-gray-600 mb-2 uppercase tracking-widest">Scan to Pay</div>
+                     <img src={invoice.qrCodeUrl} alt="QR Code" className="max-h-24 object-contain mb-2" />
+                     <div className="w-full pt-2 text-center text-[9px] uppercase font-bold text-gray-500 tracking-widest invisible">
+                       QR Code
+                     </div>
+                   </div>
                  )}
-                 <div className="w-full border-t border-gray-300 pt-2 text-center text-[9px] uppercase font-bold text-gray-500 tracking-widest">
-                   Authorized Signatory
+                 <div className="flex flex-col items-center min-w-[120px]">
+                   {invoice.signatureUrl && (
+                     <img src={invoice.signatureUrl} alt="Authorized Signatory" className="max-h-24 object-contain mb-2" />
+                   )}
+                   <div className="w-full border-t border-gray-300 pt-2 text-center text-[9px] uppercase font-bold text-gray-500 tracking-widest">
+                     Authorized Signatory
+                   </div>
                  </div>
                </div>
             </div>

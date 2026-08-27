@@ -26,7 +26,16 @@ export const defaultInvoice: InvoiceDetails = {
   discount: 0,
   notes: 'Thank you for your business.',
   terms: 'Please pay within 7 days. Late payments may be subject to a fee.',
+  themeColor: '#0033cc',
   letterheadUrl: null,
   signatureUrl: null,
+  qrCodeUrl: null,
+  bankDetails: {
+    bankName: '',
+    accountName: '',
+    accountNumber: '',
+    ifscCode: '',
+    branch: '',
+  },
   contentPadding: { top: 64, right: 64, bottom: 64, left: 64 },
 };

@@ -56,6 +56,7 @@ export const InvoiceEditor: React.FC<InvoiceEditorProps> = ({ invoice, setInvoic
   };
 
   const signatureInputRef = useRef<HTMLInputElement>(null);
+  const qrCodeInputRef = useRef<HTMLInputElement>(null);
 
   const handleSignatureUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -68,9 +69,25 @@ export const InvoiceEditor: React.FC<InvoiceEditorProps> = ({ invoice, setInvoic
     }
   };
 
+  const handleQrCodeUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        updateField('qrCodeUrl', reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const removeSignature = () => {
     updateField('signatureUrl', null);
     if (signatureInputRef.current) signatureInputRef.current.value = '';
+  };
+
+  const removeQrCode = () => {
+    updateField('qrCodeUrl', null);
+    if (qrCodeInputRef.current) qrCodeInputRef.current.value = '';
   };
 
   const addItem = () => {
@@ -157,6 +174,20 @@ export const InvoiceEditor: React.FC<InvoiceEditorProps> = ({ invoice, setInvoic
         </div>
       </section>
 
+      {/* Theme Settings */}
+      <section className="mb-4">
+        <h3 className="text-[10px] uppercase font-bold text-gray-400 mb-4 tracking-widest flex items-center gap-2">Brand Color</h3>
+        <div className="flex items-center gap-4 border border-gray-200 p-4">
+          <input 
+            type="color" 
+            className="w-12 h-12 cursor-pointer border-0 p-0 rounded-none bg-transparent" 
+            value={invoice.themeColor || '#0033cc'} 
+            onChange={(e) => updateField('themeColor', e.target.value)} 
+          />
+          <div className="text-xs font-mono text-gray-500 uppercase">{invoice.themeColor || '#0033cc'}</div>
+        </div>
+      </section>
+
       {/* Basic Info */}
       <section className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div>
@@ -220,28 +251,38 @@ export const InvoiceEditor: React.FC<InvoiceEditorProps> = ({ invoice, setInvoic
           </button>
         </div>
         
-        <div className="w-full">
+         <div className="w-full">
            <table className="w-full">
              <thead>
                <tr className="border-b border-gray-100">
                   <th className="text-left py-2 text-[9px] uppercase font-bold text-gray-400 w-12 tracking-widest">No.</th>
                   <th className="text-left py-2 text-[9px] uppercase font-bold text-gray-400 tracking-widest">Description</th>
-                  <th className="text-right py-2 text-[9px] uppercase font-bold text-gray-400 w-24 tracking-widest">Qty</th>
-                  <th className="text-right py-2 text-[9px] uppercase font-bold text-gray-400 w-32 tracking-widest">Rate</th>
-                  <th className="text-center py-2 text-[9px] uppercase font-bold text-gray-400 w-12"></th>
+                  <th className="text-left py-2 text-[9px] uppercase font-bold text-gray-400 w-24 tracking-widest">HSN</th>
+                  <th className="text-right py-2 text-[9px] uppercase font-bold text-gray-400 w-20 tracking-widest">Qty</th>
+                  <th className="text-right py-2 text-[9px] uppercase font-bold text-gray-400 w-20 tracking-widest">Unit</th>
+                  <th className="text-right py-2 text-[9px] uppercase font-bold text-gray-400 w-28 tracking-widest">Rate</th>
+                  <th className="text-center py-2 text-[9px] uppercase font-bold text-gray-400 w-10"></th>
                </tr>
              </thead>
              <tbody className="text-sm">
                 {invoice.items.map((item, index) => (
                    <tr key={item.id} className="border-b border-gray-50 group">
                       <td className="py-3 font-mono text-gray-400 text-xs">{(index + 1).toString().padStart(2, '0')}</td>
-                      <td className="py-3">
+                      <td className="py-3 pr-2">
                          <input className="w-full bg-transparent outline-none focus:border-b focus:border-gray-300 font-medium pb-1" placeholder="Item description" 
                                 value={item.description} onChange={e => updateItem(item.id, 'description', e.target.value)} />
                       </td>
-                      <td className="py-3">
+                      <td className="py-3 pr-2">
+                         <input className="w-full bg-transparent outline-none focus:border-b focus:border-gray-300 font-medium pb-1" placeholder="HSN/SAC" 
+                                value={item.hsn || ''} onChange={e => updateItem(item.id, 'hsn', e.target.value)} />
+                      </td>
+                      <td className="py-3 pr-2">
                          <input type="number" min="1" className="w-full bg-transparent outline-none text-right focus:border-b focus:border-gray-300 pb-1" 
                                 value={item.quantity} onChange={e => updateItem(item.id, 'quantity', Number(e.target.value))} />
+                      </td>
+                      <td className="py-3 pr-2">
+                         <input className="w-full bg-transparent outline-none text-right focus:border-b focus:border-gray-300 pb-1" placeholder="Unit"
+                                value={item.unit || ''} onChange={e => updateItem(item.id, 'unit', e.target.value)} />
                       </td>
                       <td className="py-3 flex items-center justify-end group-focus-within:border-b border-gray-300 pb-1 mt-[11px] h-[32px]">
                          <span className="text-gray-400 mr-1 text-xs">{invoice.currency}</span>
@@ -280,6 +321,30 @@ export const InvoiceEditor: React.FC<InvoiceEditorProps> = ({ invoice, setInvoic
                         value={invoice.discount} onChange={e => updateField('discount', Number(e.target.value))} />
                </div>
              </div>
+             
+             <div className="pt-6 border-t border-gray-100">
+               <h3 className="text-[10px] uppercase font-bold text-gray-400 mb-4 tracking-widest">Bank Details</h3>
+               <div className="space-y-4">
+                 <div>
+                   <input className="w-full border-b border-gray-200 py-2 text-sm focus:outline-none focus:border-black bg-transparent" placeholder="Bank Name"
+                          value={invoice.bankDetails?.bankName || ''} onChange={e => updateField('bankDetails', { ...invoice.bankDetails, bankName: e.target.value })} />
+                 </div>
+                 <div>
+                   <input className="w-full border-b border-gray-200 py-2 text-sm focus:outline-none focus:border-black bg-transparent" placeholder="Account Name"
+                          value={invoice.bankDetails?.accountName || ''} onChange={e => updateField('bankDetails', { ...invoice.bankDetails, accountName: e.target.value })} />
+                 </div>
+                 <div className="grid grid-cols-2 gap-4">
+                   <input className="w-full border-b border-gray-200 py-2 text-sm focus:outline-none focus:border-black bg-transparent" placeholder="A/c No."
+                          value={invoice.bankDetails?.accountNumber || ''} onChange={e => updateField('bankDetails', { ...invoice.bankDetails, accountNumber: e.target.value })} />
+                   <input className="w-full border-b border-gray-200 py-2 text-sm focus:outline-none focus:border-black bg-transparent" placeholder="IFSC Code"
+                          value={invoice.bankDetails?.ifscCode || ''} onChange={e => updateField('bankDetails', { ...invoice.bankDetails, ifscCode: e.target.value })} />
+                 </div>
+                 <div>
+                   <input className="w-full border-b border-gray-200 py-2 text-sm focus:outline-none focus:border-black bg-transparent" placeholder="Branch"
+                          value={invoice.bankDetails?.branch || ''} onChange={e => updateField('bankDetails', { ...invoice.bankDetails, branch: e.target.value })} />
+                 </div>
+               </div>
+             </div>
          </div>
          <div className="space-y-6">
            <div>
@@ -295,8 +360,24 @@ export const InvoiceEditor: React.FC<InvoiceEditorProps> = ({ invoice, setInvoic
          </div>
       </section>
 
-      {/* Signature */}
-      <section className="pt-8 border-t border-gray-100 flex justify-end">
+      {/* Signature and QR */}
+      <section className="pt-8 border-t border-gray-100 flex justify-end gap-6">
+         <div className="w-48 border border-gray-200 p-6 flex flex-col items-center justify-center text-center hover:bg-gray-50 transition relative min-h-[160px]">
+           {invoice.qrCodeUrl ? (
+             <div className="relative w-full flex justify-center">
+               <img src={invoice.qrCodeUrl} alt="QR Code" className="max-h-24 object-contain" />
+               <button onClick={removeQrCode} className="absolute -top-4 -right-4 p-2 bg-black text-white hover:bg-gray-800 shadow-md transition">
+                 <X size={14} />
+               </button>
+             </div>
+           ) : (
+             <>
+               <p className="text-[10px] text-gray-400 mb-3 font-bold uppercase tracking-widest leading-relaxed">QR Code</p>
+               <button onClick={() => qrCodeInputRef.current?.click()} className="text-[10px] font-bold uppercase border border-gray-200 px-4 py-2 hover:bg-black hover:text-white transition tracking-widest">Upload</button>
+               <input type="file" ref={qrCodeInputRef} onChange={handleQrCodeUpload} accept="image/*" className="hidden" />
+             </>
+           )}
+         </div>
          <div className="w-64 border border-gray-200 p-6 flex flex-col items-center justify-center text-center hover:bg-gray-50 transition relative min-h-[160px]">
            {invoice.signatureUrl ? (
              <div className="relative w-full flex justify-center">

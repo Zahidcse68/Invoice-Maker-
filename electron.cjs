@@ -1,4 +1,5 @@
 const { app, BrowserWindow } = require('electron');
+const path = require('path');
 
 function createWindow() {
   const win = new BrowserWindow({
@@ -6,14 +7,19 @@ function createWindow() {
     height: 800,
     webPreferences: {
       nodeIntegration: true,
+      contextIsolation: false,
     },
     title: "Invoice Generator",
     autoHideMenuBar: true,
   });
 
-  // Load the Vite dev server URL
-  const port = process.env.PORT || 3000;
-  win.loadURL(`http://localhost:${port}`);
+  if (app.isPackaged) {
+    win.loadFile(path.join(__dirname, 'dist', 'index.html'));
+  } else {
+    // Load the Vite dev server URL
+    const port = process.env.PORT || 3000;
+    win.loadURL(`http://localhost:${port}`);
+  }
 }
 
 app.whenReady().then(() => {

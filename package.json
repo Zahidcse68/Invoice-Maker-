@@ -1,15 +1,40 @@
 {
   "name": "react-example",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
+  "description": "A standalone invoice generator app",
+  "author": "Invoice Generator",
+  "main": "electron.cjs",
   "type": "module",
   "scripts": {
     "dev": "vite --port=3000 --host=0.0.0.0",
     "dev:desktop": "concurrently \"npm run dev\" \"wait-on http://localhost:3000 && electron electron.cjs\"",
     "build": "vite build",
+    "build:desktop": "npm run build && electron-builder",
     "preview": "vite preview",
     "clean": "rm -rf dist",
     "lint": "tsc --noEmit"
+  },
+  "build": {
+    "appId": "com.invoicegenerator.app",
+    "productName": "Invoice Generator",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "electron.cjs",
+      "package.json"
+    ],
+    "mac": {
+      "category": "public.app-category.business"
+    },
+    "win": {
+      "target": "nsis"
+    },
+    "linux": {
+      "target": "AppImage"
+    }
   },
   "dependencies": {
     "@google/genai": "^1.29.0",
@@ -35,6 +60,8 @@
     "concurrently": "^9.2.1",
     "cross-env": "^10.1.0",
     "electron": "^41.5.0",
+    "electron-builder": "^26.15.3",
+    "electron-is-dev": "^3.0.1",
     "tailwindcss": "^4.1.14",
     "tsx": "^4.21.0",
     "typescript": "~5.8.2",

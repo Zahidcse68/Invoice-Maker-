@@ -34,8 +34,17 @@ export interface InvoiceDetails {
   discount: number; // fixed amount or could be percentage
   notes: string;
   terms: string;
+  themeColor: string;
   letterheadUrl: string | null;
   signatureUrl: string | null;
+  qrCodeUrl: string | null;
+  bankDetails: {
+    bankName: string;
+    accountName: string;
+    accountNumber: string;
+    ifscCode: string;
+    branch: string;
+  };
   contentPadding: {
     top: number;
     right: number;
